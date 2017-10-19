@@ -1,0 +1,27 @@
+{
+	"defaultEmailTemplate" : {
+        "subject" : "Error while executing workflow: ",
+        "recipients" : ["exemple@corp.local", "example2@corp.local", "example3@corp.local"],
+        "template" : "defaultEmailTemplate"
+    },
+    "Determine VM Subnet" : {
+        "subject" : "Error while determining VM Subnet",
+        "recipients" : ["exemple@corp.local", "example2@corp.local", "example3@corp.local"],
+        "template" : "determineVmSubnetEmailTemplate"
+    },
+	"Add VM to Qualys Asset group" : {
+        "subject" : "Error while adding VM to Qualys asset group",
+        "recipients" : ["example@corp.local", "example@corp.local", "test1@corp.local"],
+        "template" : "addVmToQualysAssetGroupEmailTemplate"
+    },
+	"Remove VM from Qualys Asset group" : {
+        "subject" : "Error while removing VM from Qualys asset group",
+        "recipients" : ["example@corp.local", "example2@corp.local", "test1@corp.local"],
+        "template" : "removeVmFromQualysAssetGroupEmailTemplate"
+    },
+	"Create AD object" : {
+        "subject" : "Error while creating AD object",
+        "recipients" : ["example@corp.local", "example2@corp.local", "test1@corp.local"],
+        "template" : "createADObjectEmailTemplate"
+    }
+}

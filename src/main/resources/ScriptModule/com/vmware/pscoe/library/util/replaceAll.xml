@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="replaceAll" result-type="string" api-version="6.0.0" id="c01c4d8f-a88b-400a-943c-408bf8ba0bb2" version="0.0.0" allowed-operations="vef">
+  <param n="src" t="string"><![CDATA[]]></param>
+  <param n="regex" t="string"><![CDATA[]]></param>
+  <param n="repleacement" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var result = src;
+var newResult = src;
+while(true) {
+	result = newResult;
+	newResult = result.replace(regex, repleacement);
+	if (newResult == result) {
+		break;
+	}
+}
+return result]]></script>
+</dunes-script-module>

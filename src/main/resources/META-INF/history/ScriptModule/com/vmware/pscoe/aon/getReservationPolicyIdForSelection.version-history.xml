@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<items>
+  <item>
+    <content initialized="true"/>
+    <ver>1.0.3</ver>
+    <date>20170726194745+0000</date>
+    <user>administrator</user>
+    <cm><![CDATA[Imported from content from package]]></cm>
+  </item>
+  <item>
+    <content initialized="true"/>
+    <ver>1.1.0</ver>
+    <date>20170802020109+0000</date>
+    <user>administrator</user>
+    <cm><![CDATA[Updated to support alternate datacenter]]></cm>
+  </item>
+  <last-content-signature>Bk8KU6RCCL4ggAdwEPd3FE0Osl9pnRdJmCo1CYXkS7j4vQ83ekPeOlHbfRzxUuB2uEzPRI798MmLPShEzzHlgn9VDNwCgy9gVUaCtoHY+f/BfhYt6d3Zy+WJAobhEa+9je7vF2Sr4Oy6JeEnaO9WcKQ4UJsZUuRcYwbMw/33slnsUTgHxvsATkt7noD+bIG8BKzoUQLXBlr8sWsTIZ++tT+rkroAmPV4qOklORA9NGRokyl2l8UKInBPcxxPUpoBJPPUu17ZJglMpjrtq0zodyPI/b5FnKurNcftDRapqCcHfRIsCslqKVDfP70jSWROJUYh5Fp2Ev08q3SiFQWyCQ==</last-content-signature>
+</items>

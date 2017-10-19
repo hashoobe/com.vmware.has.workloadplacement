@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getDatacenterFromMap" result-type="string" api-version="6.0.0" id="83dfd786-d7d1-4d07-a585-7d7ffa09b7e5" version="0.0.0" allowed-operations="vef">
+  <param n="aonAltDC" t="string"><![CDATA[]]></param>
+  <param n="aonLifecycle" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("com.vmware.pscoe.aon.getDatacenterFromMap");
+
+logger.debug("Aon Alternative Datacenter Input Value = " + aonAltDC);
+
+if (aonAltDC == "Standard") {
+	logger.debug("Aon Alternative Datacenter = Standard");
+	var datacenter = System.getModule("com.vmware.pscoe.aon").getLifecycleFromMap(aonLifecycle,"Datacenter Location","AppIDEnvironment") ;
+	}
+else {
+	logger.debug("Aon Alternative Datacenter = Alternate");
+	var datacenter = System.getModule("com.vmware.pscoe.aon").getLifecycleFromMap(aonLifecycle,"Alternate Location","AppIDEnvironment") ;
+	}
+return datacenter;]]></script>
+</dunes-script-module>

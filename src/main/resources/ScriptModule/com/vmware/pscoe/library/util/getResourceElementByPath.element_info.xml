@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.util</entry>
+<entry key="name">getResourceElementByPath</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">57c1c343-ad71-43e3-9558-84c29595fe81</entry>
+</properties>

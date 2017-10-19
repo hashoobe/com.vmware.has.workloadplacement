@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getCatalogItemRequestProperties" result-type="Properties" api-version="6.0.0" id="c1ee07f1-89ce-47ba-a828-098a2e7c4d83" version="1.0.1" allowed-operations="vef">
+  <param n="request" t="vCACCAFE:CatalogItemRequest"><![CDATA[]]></param>
+  <param n="cafeHost" t="vCACCAFE:VCACHost"><![CDATA[]]></param>
+  <param n="componentName" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("com.vmware.pscoe.aon.vra.getCatalogItemRequestProperties");
+
+var requestProperties = new Properties();
+
+// now get the corresponding composite blueprint
+var catItemId = request.getCatalogItemRef().getId();
+logger.debug("CatalogItem ID: " + catItemId);
+
+var reqOrg = request.getOrganization();
+var tenantRef = reqOrg.getTenantRef();
+
+// need to use REST client, as entitiesfinder occasionally results in error 403 for catalog item
+var catClient = cafeHost.createCatalogClient();
+var catItemResponse = catClient.get("/consumer/catalogItems/" + catItemId);
+logger.debug("Catalog Item: " + catItemResponse);
+var catItem = catItemResponse.getBodyAsJson();
+
+var compBpId = null;
+if (catItem != null && catItem.providerBinding != null) {
+	var bindId = catItem.providerBinding.bindingId;
+	compBpId = bindId.replace(tenantRef + "!::!", "");
+}
+
+var compositeBlueprint = null;
+compositeBlueprint = vCACCAFEEntitiesFinder.getCompositeBlueprint(cafeHost, compBpId);
+var blueprintName = compositeBlueprint.name;
+logger.debug("Found composite blueprint: " + compositeBlueprint);
+
+// get all properties from property groups
+addPropertiesFromPropertyGroups (requestProperties, compositeBlueprint, compositeBlueprint.name);
+
+// get all properties directly assigned to the composite blueprint
+var bpProps = compositeBlueprint.getProperties();
+if (bpProps) {
+		addPropertiesFromBlueprintProperties (requestProperties, bpProps);
+} else {
+	logger.debug ("No properties found for composite blueprint.");
+}
+
+var components = compositeBlueprint.getComponents();
+if (components && components.keys.length > 0) {
+	for (var i = 0; i< components.keys.length; i++) {
+		var compKey = components.keys[i];
+		
+		if (compKey && (!componentName || componentName == compKey)) {
+			
+			if (compKey && components.get(compKey)) {
+				var component = components.get(compKey);
+				logger.debug ("Getting properties for component: " + component);
+				
+				// get all properties from property groups assigned to component
+				addPropertiesFromPropertyGroups (requestProperties, component, compKey);
+				
+				// get all properties directly assigned to the component
+				var bpCompProps = component.getData();
+				if (bpCompProps) {
+					addPropertiesFromBlueprintProperties (requestProperties, bpCompProps);
+				} else {
+					logger.debug ("No properties found for component.");
+				}
+			}
+		}
+	}
+}
+
+logger.debug ("Getting properties for current request now.");
+var reqData = request.getRequestData();
+
+// Add all request properties for the deployment
+addLiteralMapToProperties (requestProperties, reqData);
+
+// now add all request properties for the component(s)
+if (components && components.keys.length > 0) {
+	for (var i = 0; i< components.keys.length; i++) {
+		var compKey = components.keys[i];
+		
+		if (compKey && (!componentName || componentName == compKey)) {
+			logger.debug("Getting request properties for component: " + compKey);
+			var compDetails = findComponentDetailInLiteralMap (reqData, compKey);
+			if (compKey && compDetails && compDetails.getValue()) {
+				addLiteralMapToProperties (requestProperties, compDetails.getValue());
+			}
+		}
+	}
+}
+
+for each (var propKey in requestProperties.keys) {
+	logger.debug("Found property for machine: " + propKey + ": " + requestProperties.get(propKey));
+}
+
+return requestProperties;
+
+// --- functions ---
+
+function addPropertiesFromBlueprintProperties (properties, blueprintPropertyMap) {
+	for each (var propKey in blueprintPropertyMap.keys) {
+		var propValue = "";
+		try {
+			propValue = extractValueFromFacet(blueprintPropertyMap, propKey, "defaultValue");
+			if (!propValue) {
+				propValue = extractValueFromFacet(blueprintPropertyMap, propKey, "fixedValue");
+			}
+		} catch (propValEx) {
+			logger.debug ("Could not get value of property '" + propKey + "' - setting to empty. Error: " + propValEx);
+		}
+		logger.debug("Found property '" + propKey + "' with value: " + propValue);
+		properties.put(propKey, propValue);
+	}
+}
+
+function extractValueFromFacet (blueprintPropertyMap, propKey, facetName) {
+	var val = "";
+	if (blueprintPropertyMap && blueprintPropertyMap[propKey]) {
+		var facets = blueprintPropertyMap[propKey].getFacets();
+		if (facets && facets.hasOwnProperty(facetName) && facets[facetName] && facets[facetName].value && facets[facetName].value.value) {
+			val = facets[facetName].value.value;
+		}
+	}
+	logger.debug("Found the following value for property '" + propKey + "' with facet '" + facetName + "': " + val); 
+	return val;
+}
+
+function addPropertiesFromPropertyGroups (properties, blueprint, blueprintName) {
+	if (blueprint) {
+		var propGroups = blueprint.getPropertyGroups();
+		if (propGroups != null && propGroups.length > 0) {
+			for each ( var propGroup in propGroups) {
+				logger.debug("Found associated property group: " + propGroup);
+				
+				var PropertyGroup = System.getModule("com.vmware.pscoe.library.vra").PropertyGroup(cafeHost);
+				var thePropGroup = PropertyGroup.get(propGroup);
+				
+				if (thePropGroup != null && thePropGroup.getProperties() != null) {
+					var props = thePropGroup.getProperties();
+					if (props != null) {
+						for ( var propKey in props) {
+							properties.put(propKey, props[propKey].value);
+						}
+					} else {
+						logger.debug ("No properties found for property group.");
+					}
+				}
+			}
+		} else {
+			logger.debug ("No property groups found assigned to blueprint '" + blueprintName + "'.");
+		}
+	}
+}
+
+function findComponentDetailInLiteralMap (map, compName) {
+	logger.debug("Getting component details from request data.");
+	var compDetails = null;
+	if (map != null) {
+		var compProperty = "provider-" + compName;
+		compDetails = map.get(compProperty);
+		if (compDetails) {
+			logger.debug("Found component detail with property '" + compProperty + "': " + compDetails);
+		} else {
+			for each (var key in map.keySet()) {
+				var value = map.get(key);
+				var deploymentKey = compName.replace(/[^A-Za-z0-9]/g, "");
+				if (value instanceof vCACCAFEComplexLiteral && value.getTypeFilter() && value.getTypeFilter().indexOf(deploymentKey + "*") == 0) {
+					compDetails = value;
+					logger.debug("Found component detail with key '" + key + "': " + compDetails);
+					break;
+				}
+			}
+		}
+	}
+	return compDetails;
+}
+
+function addLiteralMapToProperties (properties, map) {
+	if (map != null) {
+		for each (var key in map.keySet()) {
+			var value = map.get(key);
+			if (value instanceof vCACCAFEComplexLiteral) {
+				logger.debug ("Found complex literal that is not supported for this request, probably details about a component: " + key + ": " + value);
+			} else {
+				if (key != null) {
+					var propKey = key.replace("provider-", "");
+					if (value != null) {
+						value = value.getValue();
+					}
+					properties.put(propKey, value);
+				}
+			}
+		}
+	}
+}]]></script>
+</dunes-script-module>

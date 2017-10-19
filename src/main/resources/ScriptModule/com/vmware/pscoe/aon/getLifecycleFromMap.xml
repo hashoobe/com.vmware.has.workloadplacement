@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getLifecycleFromMap" result-type="string" api-version="6.0.0" id="eb8b8dc0-abdf-4de2-a1cf-bfe861166b14" version="1.0.0" allowed-operations="vef">
+  <param n="sourceLifecycle" t="string"><![CDATA[]]></param>
+  <param n="targetCodeType" t="string"><![CDATA[]]></param>
+  <param n="sourceCodeType" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var action = {
+
+    getLifecycleFromMap: function getLifecycleFromMap(
+        sourceLifecycle,
+        targetCodeType,
+        sourceCodeType) {
+
+        const MAP_FILE_PATH = 'AON/General/lifecycle_mapping.csv',
+            DEF_SOURCE_TYPE = 'AonLifecycle';
+
+        if (!([sourceLifecycle, targetCodeType].every(function (e) {
+                return (e && e.length)
+            })))
+            throw "IllegalArgumentException: sourceLifecyle and targetCodeType required.";
+
+        sourceCodeType = sourceCodeType || DEF_SOURCE_TYPE;
+
+        var include = Function(System.getModule("com.vmware.pscoe.aon.util").include(String))();
+        var relib = include('com.vmware.pscoe.aon.lib', 'relib');
+
+        var mapping = System.getModule("com.vmware.pscoe.library.util").convertCsvToJSON(
+                relib.get(MAP_FILE_PATH)),
+            index = {};
+
+        mapping.forEach(function (e) {
+            index[e[sourceCodeType]] = e;
+        });
+        mapping = index[sourceLifecycle];
+        if (!mapping)
+            throw "MappingNotFoundException: " + sourceLifecycle;
+
+        if (!(targetCodeType in mapping))
+            throw "MappingNotFoundException: " + sourceLifecycle + "." + targetCodeType;
+
+        return mapping[targetCodeType];
+    }
+};
+
+return action.getLifecycleFromMap(
+    sourceLifecycle,
+    targetCodeType,
+	sourceCodeType);]]></script>
+</dunes-script-module>

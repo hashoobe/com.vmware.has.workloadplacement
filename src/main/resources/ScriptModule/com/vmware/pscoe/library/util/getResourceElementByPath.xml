@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getResourceElementByPath" result-type="ResourceElement" api-version="6.0.0" id="57c1c343-ad71-43e3-9558-84c29595fe81" version="0.0.0" allowed-operations="vef">
+  <param n="categoryPath" t="string"><![CDATA['/' separated path.]]></param>
+  <param n="elementName" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[System.log("Looking for Resource Element Category: " + categoryPath + " and element: " + elementName)
+var category = Server.getResourceElementCategoryWithPath(categoryPath);
+
+for each (var resourceElement in category.resourceElements) {
+	if (resourceElement.name == elementName) {
+		return resourceElement;
+	}
+}
+
+System.error('Cannot find resource element at category [' + categoryPath + '] with name [' + elementName + ']');
+return null;]]></script>
+</dunes-script-module>

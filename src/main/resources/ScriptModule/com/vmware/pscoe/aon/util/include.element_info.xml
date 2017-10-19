@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.aon.util</entry>
+<entry key="name">include</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">c7f144b2-b167-4b8d-9104-498578987ed1</entry>
+</properties>

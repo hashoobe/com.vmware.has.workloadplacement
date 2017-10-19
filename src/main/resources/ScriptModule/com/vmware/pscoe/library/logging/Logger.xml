@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="Logger" result-type="{JSON}" api-version="6.0.0" id="com.vmware.pscoe.library.logging.Logger" version="2.0.0" allowed-operations="vef">
+  <description><![CDATA[/*
+ * @param name {string}
+ * @param options {Any} 
+ * @return {JSON}
+ */]]></description>
+  <param n="name" t="Any"><![CDATA[]]></param>
+  <param n="options" t="Any"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[/*
+ * This action represents logging interface for vRO actions or scripting blocks.
+ *  - So at later point this implementatino can be replace by more sophisticated logging system.
+ *
+ * @param name    - logger name; ex: com.vmware.pscoe.mail
+ * @param options   - logger context, could be any object; ex: vc:VirtualMachine
+ * @return Logger   - the actual logger object
+ */
+function Logger(name, options){
+
+  var log = function(name, options, severity, message){
+    var msg = message;
+    switch(severity){
+      case "DEBUG" : System.debug(msg); break;
+      case "INFO"  : System.log(msg)  ; break;
+      case "WARN"  : System.warn(msg) ; break;
+      case "ERROR" : System.error(msg)  ; break;
+      default: System.error("Logging Level[" + severity + "] is not defined!");
+    }
+  }
+
+  this.info = function(msg){
+    log(name, options, "INFO", msg);
+  }
+  this.warn = function(msg){
+    log(name, options, "WARN", msg);
+  }
+  this.error = function(msg){
+    log(name, options, "ERROR", msg);
+  }
+  this.debug = function(msg){
+    log(name, options, "DEBUG", msg);
+  }
+  this.implementation = 'vRO built in';
+}
+
+return Logger;
+]]></script>
+</dunes-script-module>

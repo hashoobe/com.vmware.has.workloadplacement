@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="propertiesToJson" result-type="Any" api-version="6.0.0" id="ebf48917-f885-44f8-aff3-9cab5cc1ed7a" version="1.0.0" allowed-operations="vef">
+  <param n="vCACVmProperties" t="Properties"><![CDATA[]]></param>
+  <param n="vCACVm" t="vCAC:VirtualMachine"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var ObjectWrapper = System.getModule("com.vmware.pscoe.library.util").ObjectWrapper()
+
+var variables = new Properties();
+function addProperties(source, target) {
+	for each (var key in target.keys) {
+		source.put(key, target.get(key));
+	}
+}
+if (vCACVm && vCACVm.getEntity()) {
+	addProperties(variables, vCACVm.getEntity().getProperties());
+}
+addProperties(variables, vCACVmProperties);
+
+var propertiesWrapper = new ObjectWrapper({});
+
+for each (var k in vCACVmProperties.keys) {
+	var propVal = null;
+	if (vCACVmProperties.get(k) != null) {
+		var propValStr = System.getModule("com.vmware.pscoe.library.util").processTemplate(vCACVmProperties.get(k),variables);
+		try {
+			var parsedValue = JSON.parse(propValStr);
+			//stringified json should not be parsed back to objects 
+			if(typeof parsedValue !== 'object') {
+				propVal = parsedValue;
+			} else {
+				propVal = propValStr;
+			}
+		} catch(e) {
+			//Failed to parse it might contain special chars so treat as a string
+			propVal = propValStr;
+		}
+		var objNames = k.split(".");
+		propertiesWrapper.addValueWithPath(objNames, propVal);
+	}
+}
+return propertiesWrapper.obj;
+]]></script>
+</dunes-script-module>

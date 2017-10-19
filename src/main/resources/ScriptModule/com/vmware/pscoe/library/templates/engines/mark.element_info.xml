@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.templates.engines</entry>
+<entry key="name">mark</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">2d3f64e2-5c32-4d59-bda7-fa235cf46547</entry>
+</properties>

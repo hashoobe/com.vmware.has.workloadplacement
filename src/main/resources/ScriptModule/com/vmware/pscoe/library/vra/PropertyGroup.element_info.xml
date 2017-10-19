@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.vra</entry>
+<entry key="name">PropertyGroup</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">dcc5a1f0-9b6b-40c9-a31c-c9e7ba0f372e</entry>
+</properties>

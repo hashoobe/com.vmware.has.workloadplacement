@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="CafeRestClient" result-type="Any" api-version="6.0.0" id="04edee3f-dfe2-47bd-86cb-307605dd0a9d" version="1.0.0" allowed-operations="vef">
+  <description><![CDATA[Deletes a composite blueprint.]]></description>
+  <param n="host" t="vCACCAFE:VCACHost"><![CDATA[]]></param>
+  <param n="clientName" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var restClient = host.createRestClient(clientName);
+
+var CafeRestClient = function(baseUrl) {
+
+	this.create = function(json) {
+		restClient.post(baseUrl, json);
+	}
+
+	this.update = function(json) {
+		restClient.put(baseUrl + "/" + json.id, json);
+	}
+
+	this.createOrUpdate = function(json, skipIdGeneration) {
+		if (json.id == null || json.id == undefined) {
+			if (!skipIdGeneration) {
+				json.id = System.nextUUID();
+			}
+			this.create(json)
+		} else {
+			this.update(json)
+		}
+		return json.id;
+	}
+	this.get = function(id) {
+		return restClient.get(baseUrl + "/" + id).getBodyAsJson();
+	}
+	
+	this.getAll = function (){
+		return getContentFromAllPages(baseUrl);
+	}
+	
+	this.getByName = function(name) {
+
+		var bps = this.getByFilter({
+			name : name
+		})
+		for each (var bp in bps) {
+			if (bp.name == name) {
+				return bp;
+			}
+		}
+		return null;
+	}
+	
+	this.getByFilter = function(filter) {
+		//?$filter=name%20eq%20'vSphere%20Machine'
+		var filterStr = "";
+		var arr = []
+		for (var key in filter) {
+			var value = filter[key];
+			if (System.getObjectType(value) == "string") {
+				value = "'" + value + "'"
+			}
+			arr.push(key + " eq " + value)
+		}
+		filterStr += arr.join(" and ")
+
+		var res = this.getByFilterString(filterStr);
+		var arr = [];
+		if (res.content) {
+			for each (var info in res.content) {
+				arr.push(this.get(info.id));
+			}
+		}
+		return arr;
+	}
+	
+	this.getByFilterString = function(filterStr) {
+		
+		var filter = "?$filter=" + filterStr;
+
+		return getContentFromAllPages(baseUrl + "/" + filter);
+	}
+}
+
+function getContentFromAllPages(urlWithoutPage) {
+
+	var result = {};
+	var resultContent = [];
+	
+	var pageNo = 1;
+	var totalPages = 1;
+	while (pageNo <= totalPages) {
+		
+		var url = addPageToUrl(urlWithoutPage, pageNo);
+		
+		var pageResultStr = restClient.get(url).getBodyAsString();
+		var pageResultJson = getBodyAsJson(pageResultStr);
+		
+		var metadata = pageResultJson.metadata;
+		if (metadata && metadata.totalPages > totalPages)
+			totalPages = metadata.totalPages;
+			
+		var pageResultContent = pageResultJson.content;
+		
+		for each (var c in pageResultContent) {
+			resultContent.push(c);
+		}
+		
+		pageNo++;
+	}
+	
+	result.content = resultContent;
+	
+	return result;
+}
+
+function addPageToUrl(urlWithoutPage, pageNo) {
+	
+	var url = urlWithoutPage;
+	if (url) {
+		if (url.search(/\?.+$/) > -1)
+			url += "&page=" + pageNo;
+		else if (url.search(/\?$/) > -1)
+			url += "page=" + pageNo;
+		else
+			url += "?page=" + pageNo;
+	}
+	
+	return url;
+}
+
+function getBodyAsJson(bodyAsString) {
+	var json = {};
+	
+	if (bodyAsString) {
+		// first remove escaping of slashes
+		bodyAsString = bodyAsString.replace(/\\\//g,'/');
+		
+		// if we still have backslashes, escape them
+		bodyAsString = bodyAsString.replace(/\\/g,'\\\\');
+		
+		json = JSON.parse(bodyAsString);
+	}
+	
+	return json;
+}
+
+return CafeRestClient;]]></script>
+</dunes-script-module>

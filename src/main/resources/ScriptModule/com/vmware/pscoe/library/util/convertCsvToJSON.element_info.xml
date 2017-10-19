@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.util</entry>
+<entry key="name">convertCsvToJSON</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">60889db6-b683-45be-ba4f-f2b08ef9b148</entry>
+</properties>

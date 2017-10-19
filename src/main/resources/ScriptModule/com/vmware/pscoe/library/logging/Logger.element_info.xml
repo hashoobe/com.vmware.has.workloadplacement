@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.logging</entry>
+<entry key="name">Logger</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">com.vmware.pscoe.library.logging.Logger</entry>
+</properties>

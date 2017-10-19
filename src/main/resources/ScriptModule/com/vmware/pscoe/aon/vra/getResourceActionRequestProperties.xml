@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getResourceActionRequestProperties" result-type="Properties" api-version="6.0.0" id="627fd409-b453-4fcd-9d55-e4bc8ba371a4" version="1.0.1" allowed-operations="vef">
+  <param n="request" t="vCACCAFE:ResourceActionRequest"><![CDATA[]]></param>
+  <param n="cafeHost" t="vCACCAFE:VCACHost"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("com.vmware.pscoe.aon.vra.getResourceActionRequestProperties");
+
+var requestProperties = new Properties();
+
+var reqData = request.getRequestData();
+
+// Add all request properties for the deployment
+addLiteralMapToProperties (requestProperties, reqData);
+
+for each (var propKey in requestProperties.keys) {
+	logger.debug("Found request property: " + propKey + ": " + requestProperties.get(propKey));
+}
+
+return requestProperties;
+
+// --- functions ---
+
+function addLiteralMapToProperties (properties, map) {	
+	if (map != null) {
+		for each (var key in map.keySet()) {
+			var value = map.get(key);
+			if (value instanceof vCACCAFEComplexLiteral) {
+				logger.debug ("Found complex literal that is not supported for this request, probably details about a component: " + key + ": " + value);
+			} else {
+				if (key != null) {
+					var propKey = key.replace("provider-", "");
+					if (value != null) {
+						value = value.getValue();
+					}
+					properties.put(propKey, value);
+				}
+			}
+		}
+	}
+}]]></script>
+</dunes-script-module>

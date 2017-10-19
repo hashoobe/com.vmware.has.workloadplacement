@@ -1,0 +1,10 @@
+AonLifecycle Name,AonLifecycle,AppIDEnvironment,AonPPEnv,AonPPTier,Snow,Datacenter,Datacenter Location,Alternate Location,AWS Account
+Proof of Concept,I,DM,development,dev,DM-Demo,D,STR,CAR,aonrd
+Development,D,DV,development,dev,DV-Development,D,STR,CAR,aonrd
+Lab,L,LB,development,dev,LB-Laboratory,D,STR,CAR,aonrd
+Production,P,PR,production,prod,PR-Production,C,CAR,STR,aonprod
+Test/QA,T,QA,qa,qa,QA-Quality Assurance/Test,D,STR,CAR,aonrd
+QC/UAT,Q,QC,uat,uat,QC-Quality Control/UAT,D,STR,CAR,aonprod
+Stress/Performance,S,ST,qa,qa,ST-Stress Test,D,STR,CAR,aonrd
+Disaster Recovery,X,DR,production,prod,DR-Disaster Recovery,D,STR,CAR,aonrd
+Training,R,TR,uat,uat,TR-Training,D,STR,CAR,aonrd

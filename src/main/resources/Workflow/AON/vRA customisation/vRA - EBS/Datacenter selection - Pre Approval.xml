@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item3" object-name="workflow:name=generic" id="76410789-c110-4fd5-8fdb-4cbc6281642d" version="1.1.3" api-version="6.0.0" allowed-operations="vef" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Datacenter selection - Pre Approval]]></display-name>
+  <description><![CDATA[Updated for alternate datacenter]]></description>
+  <error-handler name="item6" throw-bind-name="errorCode">
+    <position y="63.59090909090908" x="45.0"></position>
+  </error-handler>
+  <position y="9.545454545454543" x="45.0"></position>
+  <input>
+    <param name="payload" type="Properties">
+      <description><![CDATA[Payload properties passed in from EBS]]></description>
+    </param>
+  </input>
+  <output>
+    <param name="fieldValues" type="Properties"></param>
+    <param name="approved" type="boolean"></param>
+  </output>
+  <attrib name="vmProperties" type="Properties" read-only="false"></attrib>
+  <attrib name="errorCode" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="virtualMachineId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="emailConfigName" type="string" read-only="false">
+    <value encoded="n"><![CDATA[Datacenter selection]]></value>
+  </attrib>
+  <attrib name="errorMessage" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="errorCodeErrorHandler" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="aonLifecycle" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="dataCenter" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="requestNumber" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="aonZone" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="aonFunction" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="reservationPolicyId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="requestId" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="aonAltDC" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="9.045454545454543" x="1084.5"></position>
+  </workflow-item>
+  <workflow-item name="item5" throw-bind-name="errorMessage" type="end" end-mode="1">
+    <position y="118.13636363636363" x="324.5"></position>
+  </workflow-item>
+  <workflow-item name="item6" prototype-id="system-error" out-name="item7" catch-name="item5" throw-bind-name="errorCodeErrorHandler" type="task" interaction="l">
+    <display-name><![CDATA[System error]]></display-name>
+    <script encoded="false"><![CDATA[
+var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger(workflow.currentWorkflow.name);
+errorMessage = "Error while mapping the datacenter and reservation policy for request '" + requestNumber + "': " + errorCode;
+logger.error(errorMessage);
+
+]]></script>
+    <in-binding>
+      <bind name="emailConfigName" type="string" export-name="emailConfigName"></bind>
+      <bind name="errorCode" type="string" export-name="errorCode"></bind>
+      <bind name="requestNumber" type="string" export-name="requestNumber"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="vmId" type="string" export-name="virtualMachineId"></bind>
+      <bind name="errorMessage" type="string" export-name="errorMessage"></bind>
+    </out-binding>
+    <description><![CDATA[Log the input text to the console log with level 'error']]></description>
+    <position y="73.59090909090908" x="145.0"></position>
+  </workflow-item>
+  <workflow-item name="item7" out-name="item5" catch-name="item5" throw-bind-name="errorCodeErrorHandler" type="link" linked-workflow-id="2ac39aea-81e9-4ec1-8488-8db14131257b">
+    <display-name><![CDATA[Send email notifications]]></display-name>
+    <in-binding>
+      <bind name="vmId" type="string" export-name="virtualMachineId"></bind>
+      <bind name="errorCode" type="string" export-name="errorCode"></bind>
+      <bind name="vmName" type="string" explicitly-not-bound="true" export-name="NULL"></bind>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"></bind>
+      <bind name="emailConfigName" type="string" export-name="emailConfigName"></bind>
+    </in-binding>
+    <out-binding></out-binding>
+    <position y="73.59090909090908" x="284.5"></position>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item0" type="task">
+    <display-name><![CDATA[set output]]></display-name>
+    <script encoded="false"><![CDATA[if (!dataCenter) {
+	throw "Could not determine datacenter to provision machine in.";
+}
+if (!reservationPolicyId) {
+	throw "Could not determine reservation policy to provision machine.";
+}
+
+fieldValues = new Properties({
+	'source-provider-Vrm.DataCenter.Location':dataCenter,
+	'source-provider-ReservationPolicyID': reservationPolicyId
+});
+approved = true;]]></script>
+    <in-binding>
+      <bind name="dataCenter" type="string" export-name="dataCenter"></bind>
+      <bind name="reservationPolicyId" type="string" export-name="reservationPolicyId"></bind>
+      <bind name="aonLifecycle" type="string" export-name="aonLifecycle"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="fieldValues" type="Properties" export-name="fieldValues"></bind>
+      <bind name="approved" type="boolean" export-name="approved"></bind>
+    </out-binding>
+    <position y="19.045454545454543" x="864.5"></position>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item8" type="task">
+    <display-name><![CDATA[Get properties]]></display-name>
+    <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("Datacenter selection - Pre Approval");
+
+aonZone = vmProperties.get("AonZone");
+aonFunction = vmProperties.get("AonFunction");
+aonAltDC = vmProperties.get("AonAlternateDatacenter");
+logger.debug("AonAlternateDatacenter: " + aonAltDC)
+
+var aonAppId = vmProperties.get("AonAppID");
+logger.debug("AonAppID: " + aonAppId)
+aonLifecycle = System.getModule("com.vmware.pscoe.aon").getAppIdLifecycleFromAppId(aonAppId) ;
+logger.info("AonLifecycle: " + aonLifecycle);
+]]></script>
+    <in-binding>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="aonLifecycle" type="string" export-name="aonLifecycle"></bind>
+      <bind name="aonZone" type="string" export-name="aonZone"></bind>
+      <bind name="aonFunction" type="string" export-name="aonFunction"></bind>
+      <bind name="aonAltDC" type="string" export-name="aonAltDC"></bind>
+    </out-binding>
+    <position y="19.045454545454543" x="304.5"></position>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="link" linked-workflow-id="3dbe5ac8-de7e-4645-8f65-d5c99abe9059">
+    <display-name><![CDATA[Get request properties]]></display-name>
+    <in-binding>
+      <bind name="payload" type="Properties" export-name="payload">
+        <description><![CDATA[Payload properties passed in from EBS]]></description>
+      </bind>
+    </in-binding>
+    <out-binding>
+      <bind name="requestProperties" type="Properties" export-name="vmProperties"></bind>
+      <bind name="requestId" type="string" export-name="requestId"></bind>
+      <bind name="requestNumber" type="string" export-name="requestNumber"></bind>
+    </out-binding>
+    <position y="19.545454545454543" x="145.0"></position>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item2" type="task" script-module="com.vmware.pscoe.aon/getReservationPolicyIdForSelection">
+    <display-name><![CDATA[getReservationPolicyIdForSelection]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pscoe.aon").getReservationPolicyIdForSelection(aonZone,aonFunction,aonLifecycle,aonDatacenter) ;]]></script>
+    <in-binding>
+      <bind name="aonZone" type="string" export-name="aonZone"></bind>
+      <bind name="aonFunction" type="string" export-name="aonFunction"></bind>
+      <bind name="aonLifecycle" type="string" export-name="aonLifecycle"></bind>
+      <bind name="aonDatacenter" type="string" export-name="dataCenter"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="reservationPolicyId"></bind>
+    </out-binding>
+    <description><![CDATA[Updated to support alternate datacenter]]></description>
+    <position y="19.045454545454543" x="625.0"></position>
+  </workflow-item>
+  <workflow-item name="item8" out-name="item1" type="task" script-module="com.vmware.pscoe.aon/getDatacenterFromMap">
+    <display-name><![CDATA[getDatacenterFromMap]]></display-name>
+    <script encoded="false"><![CDATA[//Auto generated script, cannot be modified !
+actionResult = System.getModule("com.vmware.pscoe.aon").getDatacenterFromMap(aonAltDC,aonLifecycle) ;]]></script>
+    <in-binding>
+      <bind name="aonAltDC" type="string" export-name="aonAltDC"></bind>
+      <bind name="aonLifecycle" type="string" export-name="aonLifecycle"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="actionResult" type="string" export-name="dataCenter"></bind>
+    </out-binding>
+    <position y="19.045454545454543" x="445.0"></position>
+  </workflow-item>
+  <presentation>
+    <p-param name="payload">
+      <desc><![CDATA[Payload properties passed in from EBS]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

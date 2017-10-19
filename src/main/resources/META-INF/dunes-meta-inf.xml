@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>cava-p-10-220.eng.vmware.com:443</comment>
+<entry key="vso-build-nb">4629841</entry>
+<entry key="pkg-description"></entry>
+<entry key="pkg-name">com.vmware.has.workloadplacement</entry>
+<entry key="used-plugins"></entry>
+<entry key="pkg-owner">O=VMware,OU=Unknown,CN=vRO localhost 4584656d-0802-46ae-a509-490571a43370</entry>
+<entry key="vso-version">7.2.0.4629841</entry>
+<entry key="pkg-id">ff8080815e3d97cc015f357893de0d1f</entry>
+</properties>

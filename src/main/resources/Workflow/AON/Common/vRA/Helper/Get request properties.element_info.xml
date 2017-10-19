@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">AON.Common.vRA.Helper</entry>
+<entry key="name">Get request properties</entry>
+<entry key="type">Workflow</entry>
+<entry key="id">3dbe5ac8-de7e-4645-8f65-d5c99abe9059</entry>
+</properties>

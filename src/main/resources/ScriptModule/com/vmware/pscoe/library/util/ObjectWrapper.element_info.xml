@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.library.util</entry>
+<entry key="name">ObjectWrapper</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">e0646c07-13cc-4982-822c-aa65b54d3817</entry>
+</properties>

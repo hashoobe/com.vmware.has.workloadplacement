@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config-element id="f2986103-1230-46f7-8dc8-1a3b7682eb80" version="1.0.3">
+  <display-name><![CDATA[vRA customisation]]></display-name>
+  <atts>
+    <att name="swapDriveName" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="swapDriveLetterWindows" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="swapDriveLetterLinux" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="swapDriveSizeFactor" type="number" read-only="false"></att>
+    <att name="swapDriveDeviceWindowsAws" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="cafeHost" type="vCACCAFE:VCACHost" read-only="false">
+      <value encoded="n"><![CDATA[dunes://service.dunes.ch/CustomSDKObject?id='a22d928d-a1c2-4032-ab1e-c29244143a5d'&dunesName='vCACCAFE:VCACHost']]></value>
+    </att>
+  </atts>
+</config-element>

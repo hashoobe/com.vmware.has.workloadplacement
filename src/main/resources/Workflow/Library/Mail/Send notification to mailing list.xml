@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item0" object-name="Workflow:name=generic" id="8F808080808080808080808080808080B1808080012318760241416446ce5b52f" version="0.0.7" api-version="6.0.0" allowed-operations="vef" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Send notification to mailing list]]></display-name>
+  <description><![CDATA[Sends an email with specified content to a given email address list, CC list, and BCC list.
+
+Uses the default settings from the Orchestrator Configuration interface for the following optional input parameters:
+SMTP host, SMTP port, username, password, from Address and from Name. You can override these values by providing input parameters.]]></description>
+  <position y="20.0" x="180.0"></position>
+  <input>
+    <param name="smtpHost" type="string">
+      <description><![CDATA[SMTP host]]></description>
+    </param>
+    <param name="smtpPort" type="number">
+      <description><![CDATA[SMTP port]]></description>
+    </param>
+    <param name="username" type="string">
+      <description><![CDATA[Username for authentication]]></description>
+    </param>
+    <param name="password" type="SecureString">
+      <description><![CDATA[Password for authentication]]></description>
+    </param>
+    <param name="fromName" type="string">
+      <description><![CDATA[Sender's name]]></description>
+    </param>
+    <param name="fromAddress" type="string">
+      <description><![CDATA[Sender's address]]></description>
+    </param>
+    <param name="toAddressList" type="Array/string">
+      <description><![CDATA[List of destination addresses]]></description>
+    </param>
+    <param name="subject" type="string">
+      <description><![CDATA[Email subject]]></description>
+    </param>
+    <param name="content" type="string">
+      <description><![CDATA[Email content (text or HTML)]]></description>
+    </param>
+    <param name="ccList" type="Array/string">
+      <description><![CDATA[List of carbon copy addresses]]></description>
+    </param>
+    <param name="bccList" type="Array/string">
+      <description><![CDATA[List of blind carbon copy addresses]]></description>
+    </param>
+    <param name="useSsl" type="boolean">
+      <description><![CDATA[If set to true, use SSL to connect ]]></description>
+    </param>
+    <param name="useStartTls" type="boolean">
+      <description><![CDATA[If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands]]></description>
+    </param>
+  </input>
+  <workflow-item name="item0" out-name="item1" type="task">
+    <display-name><![CDATA[Send Email to lists]]></display-name>
+    <script encoded="false"><![CDATA[function convertToComaSeparatedList( arrayList ){
+	// Build Coma Seperated list from an Array
+	
+	if ( arrayList == null || arrayList.length == 0) {
+		return null
+	}
+	
+	var outStr = "";
+	for ( var i=0; i<arrayList.length; i++ ){
+		outStr += arrayList[i] + ",";
+	}
+	if ( outStr.length > 0 ){
+		outStr = outStr.substring( 0, ( outStr.length-1 ) );
+	}
+	return outStr;
+}
+
+var message = new EmailMessage();
+
+// Override default settings if and only if input parameter is set
+if ( smtpHost != null && smtpHost.length > 0 ){
+	message.smtpHost = smtpHost;
+}
+if ( smtpPort != null && smtpPort > 0 ){
+	message.smtpPort = smtpPort;
+}
+if ( username !=null && username.length > 0){
+	message.username = username;
+}
+if ( password != null && password.length > 0){
+	message.password = password;
+}
+if ( fromName != null && fromName.length > 0){
+	message.fromName = fromName;
+}
+if ( fromAddress != null && fromAddress.length > 0){
+	message.fromAddress = fromAddress;
+}
+
+if ( useSsl ){
+	message.useSsl = true;
+}
+
+if ( useStartTls ){
+	message.useStartTls = true;
+}
+
+// Build Address Lists
+message.toAddress = convertToComaSeparatedList(toAddressList);
+message.ccAddress = convertToComaSeparatedList(ccList);
+message.bccAddress = convertToComaSeparatedList(bccList);
+
+message.subject = subject;
+message.addMimePart(content,"text/html; charset=UTF-8");
+
+System.log( "sending mail to host: " + message.smtpHost + ":" + message.smtpPort + " with user:" + message.username 
+			+ ", from:" + message.fromAddress + ", to:" + message.toAddress );
+			
+message.sendMessage();
+]]></script>
+    <in-binding>
+      <bind name="smtpHost" type="string" export-name="smtpHost"></bind>
+      <bind name="smtpPort" type="number" export-name="smtpPort"></bind>
+      <bind name="username" type="string" export-name="username"></bind>
+      <bind name="password" type="SecureString" export-name="password"></bind>
+      <bind name="fromName" type="string" export-name="fromName"></bind>
+      <bind name="fromAddress" type="string" export-name="fromAddress"></bind>
+      <bind name="toAddressList" type="Array/string" export-name="toAddressList"></bind>
+      <bind name="subject" type="string" export-name="subject"></bind>
+      <bind name="content" type="string" export-name="content"></bind>
+      <bind name="ccList" type="Array/string" export-name="ccList"></bind>
+      <bind name="bccList" type="Array/string" export-name="bccList"></bind>
+      <bind name="useSsl" type="boolean" export-name="useSsl">
+        <description><![CDATA[If set to true, use SSL to connect ]]></description>
+      </bind>
+      <bind name="useStartTls" type="boolean" export-name="useStartTls">
+        <description><![CDATA[If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands]]></description>
+      </bind>
+    </in-binding>
+    <out-binding></out-binding>
+    <position y="100.0" x="140.0"></position>
+  </workflow-item>
+  <workflow-item name="item1" type="end" end-mode="0">
+    <position y="190.0" x="180.0"></position>
+  </workflow-item>
+  <presentation>
+    <p-step>
+      <title><![CDATA[Send Notification]]></title>
+      <p-group>
+        <title><![CDATA[Host]]></title>
+        <desc><![CDATA[Optional.
+
+Defines connection settings. Default values will be used if no parameter provided.
+
+]]></desc>
+        <p-param name="smtpHost">
+          <desc><![CDATA[STMP host]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+        <p-param name="smtpPort">
+          <desc><![CDATA[SMTP port]]></desc>
+        </p-param>
+        <p-param name="useSsl">
+          <desc><![CDATA[If set to true, use SSL to connect ]]></desc>
+        </p-param>
+        <p-param name="useStartTls">
+          <desc><![CDATA[If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands]]></desc>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Credentials]]></title>
+        <desc><![CDATA[Optional.
+
+Defines credential for authentication. Default values will be used if no parameter provided.]]></desc>
+        <p-param name="username">
+          <desc><![CDATA[Username]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+        <p-param name="password">
+          <desc><![CDATA[Password]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+      </p-group>
+      <p-group>
+        <title><![CDATA[Email Content]]></title>
+        <desc><![CDATA[Defines Email content. 
+
+Only toAddress is mandatory. Default values will be used for both fromAddress and fromName if parameters not provided.
+
+]]></desc>
+        <p-param name="toAddressList">
+          <desc><![CDATA[Destination address]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[true]]></p-qual>
+          <p-qual kind="ognl" name="ognlValidator" type="String"><![CDATA[GetAction("com.vmware.library.mail","validateEmailAddressList").call(  #toAddressList )]]></p-qual>
+        </p-param>
+        <p-param name="fromAddress">
+          <desc><![CDATA[Sender's address]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+        <p-param name="fromName">
+          <desc><![CDATA[Sender's name]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+        <p-param name="subject">
+          <desc><![CDATA[Email subject]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+        <p-param name="content">
+          <desc><![CDATA[Email content]]></desc>
+          <p-qual kind="static" name="mandatory" type="boolean"><![CDATA[false]]></p-qual>
+        </p-param>
+      </p-group>
+    </p-step>
+    <p-param name="ccList">
+      <desc><![CDATA[List of carbon copy addresses]]></desc>
+    </p-param>
+    <p-param name="bccList">
+      <desc><![CDATA[List of blind carbon copy addresses]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

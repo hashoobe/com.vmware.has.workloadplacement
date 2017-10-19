@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="validateEmailAddressList" result-type="string" api-version="6.0.0" id="8480808080808080808080808080808082808080013233743790483c0250095dc" version="0.0.1" allowed-operations="vef">
+  <description><![CDATA[Checks that the given email address list does not contain any null or empty string.]]></description>
+  <param n="list" t="Array/string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var ERR_MSG = "Address list contains an empty address";
+
+if ( list == null ) 
+	return ERR_MSG;
+
+for ( i=0; i<list.length; i++ ){
+	if ( list[i] == null || list[i] == "" )
+		return ERR_MSG;
+}
+return "";
+]]></script>
+</dunes-script-module>

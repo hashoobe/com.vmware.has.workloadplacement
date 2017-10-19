@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">AON.vRA customisation.vRA - EBS</entry>
+<entry key="name">Datacenter selection - Pre Approval</entry>
+<entry key="type">Workflow</entry>
+<entry key="id">76410789-c110-4fd5-8fdb-4cbc6281642d</entry>
+</properties>

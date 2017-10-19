@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="http://vmware.com/vco/workflow" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://vmware.com/vco/workflow http://vmware.com/vco/workflow/Workflow-v4.xsd" root-name="item2" object-name="workflow:name=generic" id="2ac39aea-81e9-4ec1-8488-8db14131257b" version="1.0.7" api-version="6.0.0" allowed-operations="vef" restartMode="1" resumeFromFailedMode="0">
+  <display-name><![CDATA[Send email notifications]]></display-name>
+  <position y="50.0" x="100.0"></position>
+  <input>
+    <param name="emailConfigName" type="string"></param>
+    <param name="errorCode" type="string"></param>
+    <param name="vmName" type="string"></param>
+    <param name="vmId" type="string"></param>
+    <param name="vmProperties" type="Properties"></param>
+  </input>
+  <attrib name="workflowEmails" type="ResourceElement" read-only="false">
+    <value encoded="n"><![CDATA[dunes://service.dunes.ch/ResourceElement?id='405a0e7f-2b92-4a33-bb99-3fc76dc1f49d'&dunesName='ResourceElement']]></value>
+  </attrib>
+  <attrib name="emailHost" type="string" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="host">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="emailPort" type="number" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="port">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="username" type="string" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="username">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="password" type="SecureString" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="password">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="fromAddress" type="string" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="fromAddress">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="fromName" type="string" read-only="false" conf-id="437d60a3-8b79-492e-afa0-50aafc2b593a" conf-key="fromName">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="toAddressList" type="Array/string" read-only="false">
+    <value encoded="n"><![CDATA[__NULL__]]></value>
+  </attrib>
+  <attrib name="subject" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="content" type="string" read-only="false">
+    <value encoded="n"><![CDATA[]]></value>
+  </attrib>
+  <attrib name="useSSL" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+  </attrib>
+  <attrib name="useStartTls" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+  </attrib>
+  <attrib name="canSendEmail" type="boolean" read-only="false">
+    <value encoded="n"><![CDATA[true]]></value>
+  </attrib>
+  <workflow-item name="item0" type="end" end-mode="0">
+    <position y="45.40909090909091" x="804.5"></position>
+  </workflow-item>
+  <workflow-item name="item1" out-name="item0" type="link" linked-workflow-id="8F808080808080808080808080808080B1808080012318760241416446ce5b52f">
+    <display-name><![CDATA[Send notification to mailing list]]></display-name>
+    <in-binding>
+      <bind name="smtpHost" type="string" export-name="emailHost">
+        <description><![CDATA[SMTP host]]></description>
+      </bind>
+      <bind name="smtpPort" type="number" export-name="emailPort">
+        <description><![CDATA[SMTP port]]></description>
+      </bind>
+      <bind name="username" type="string" export-name="username">
+        <description><![CDATA[Username for authentication]]></description>
+      </bind>
+      <bind name="password" type="SecureString" export-name="password">
+        <description><![CDATA[Password for authentication]]></description>
+      </bind>
+      <bind name="fromName" type="string" export-name="fromName">
+        <description><![CDATA[Sender's name]]></description>
+      </bind>
+      <bind name="fromAddress" type="string" export-name="fromAddress">
+        <description><![CDATA[Sender's address]]></description>
+      </bind>
+      <bind name="toAddressList" type="Array/string" export-name="toAddressList">
+        <description><![CDATA[List of destination addresses]]></description>
+      </bind>
+      <bind name="subject" type="string" export-name="subject">
+        <description><![CDATA[Email subject]]></description>
+      </bind>
+      <bind name="content" type="string" export-name="content">
+        <description><![CDATA[Email content (text or HTML)]]></description>
+      </bind>
+      <bind name="ccList" type="Array/string" explicitly-not-bound="true">
+        <description><![CDATA[List of carbon copy addresses]]></description>
+      </bind>
+      <bind name="bccList" type="Array/string" explicitly-not-bound="true">
+        <description><![CDATA[List of blind carbon copy addresses]]></description>
+      </bind>
+      <bind name="useSsl" type="boolean" export-name="useSSL">
+        <description><![CDATA[If set to true, use SSL to connect ]]></description>
+      </bind>
+      <bind name="useStartTls" type="boolean" export-name="useStartTls">
+        <description><![CDATA[If true, enables the use of the STARTTLS command (if supported by the server) to switch the connection to a TLS-protected connection before issuing any login commands]]></description>
+      </bind>
+    </in-binding>
+    <out-binding></out-binding>
+    <description><![CDATA[Sends an email with specified content to a given email address list, CC list, and BCC list.
+
+Uses the default settings from the Orchestrator Configuration interface for the following optional input parameters:
+SMTP host, SMTP port, username, password, from Address and from Name. You can override these values by providing input parameters.]]></description>
+    <position y="19.045454545454543" x="624.5"></position>
+  </workflow-item>
+  <workflow-item name="item2" out-name="item3" type="task">
+    <display-name><![CDATA[Prepare message]]></display-name>
+    <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger(workflow.name);
+
+subject = "vRA notification";
+var emailSetup = {};
+var template = "";
+
+try {
+	emailSetup = JSON.parse(workflowEmails.getContentAsMimeAttachment().content)[workflowName];
+	var templateResource = System.getModule("com.vmware.pscoe.library.util").getResourceElementByPath("AON/Email Notifications/Templates", emailSetup["template"]);
+	subject = emailSetup["subject"];
+	if (templateResource == null) {
+		logger.warn("The template " + workflowName + " was not found in resource folder 'AON/Email Notifications/Templates'. Trying to send default one...");
+		templateResource = System.getModule("com.vmware.pscoe.library.util").getResourceElementByPath("AON/Email Notifications/Templates", "defaultEmailTemplate");
+		emailSetup = JSON.parse(workflowEmails.getContentAsMimeAttachment().content)["defaultEmailTemplate"];
+		subject = emailSetup["subject"] + workflowName;
+	}
+
+	template = templateResource.getContentAsMimeAttachment().content;
+} catch(e) {
+	var errorMessage = "Error during getting email template configuration: " + e;
+	logger.error (errorMessage);
+	throw errorMessage;
+}
+
+var machineProps = System.getModule("com.vmware.pscoe.library.vra.iaas").propertiesToJson(vmProperties);
+logger.debug("machineProps: "+JSON.stringify(machineProps));
+var templateContext = {
+	"subject" : subject,
+	"machine" : {
+		"id" : vmId,
+		"name" : vmName,
+		"properties" : machineProps
+	},
+	"errorCode" : errorCode
+}
+
+content = System.getModule("com.vmware.pscoe.library.templates.engines").mark(template, templateContext);
+toAddressList = emailSetup["recipients"];
+logger.debug("Workflow: " + workflowName + "\n|Email setup: " + JSON.stringify(emailSetup) + "\nContent: " + content);]]></script>
+    <in-binding>
+      <bind name="workflowName" type="string" export-name="emailConfigName"></bind>
+      <bind name="content" type="string" export-name="content"></bind>
+      <bind name="subject" type="string" export-name="subject"></bind>
+      <bind name="toAddressList" type="Array/string" export-name="toAddressList"></bind>
+      <bind name="workflowEmails" type="ResourceElement" export-name="workflowEmails"></bind>
+      <bind name="errorCode" type="string" export-name="errorCode"></bind>
+      <bind name="vmId" type="string" export-name="vmId"></bind>
+      <bind name="vmName" type="string" export-name="vmName"></bind>
+      <bind name="vmProperties" type="Properties" export-name="vmProperties"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="content" type="string" export-name="content"></bind>
+      <bind name="subject" type="string" export-name="subject"></bind>
+      <bind name="toAddressList" type="Array/string" export-name="toAddressList"></bind>
+    </out-binding>
+    <position y="55.40909090909091" x="204.5"></position>
+  </workflow-item>
+  <workflow-item name="item3" out-name="item4" type="task">
+    <display-name><![CDATA[Check SMTP settings]]></display-name>
+    <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger(workflow.name);
+
+canSendEmail = true;
+
+if (!emailHost || !emailPort || !username  || !fromAddress || !fromName) {
+	canSendEmail = false;
+	logger.warn("SMTP settings are not configured!");
+}]]></script>
+    <in-binding>
+      <bind name="emailHost" type="string" export-name="emailHost"></bind>
+      <bind name="emailPort" type="number" export-name="emailPort"></bind>
+      <bind name="username" type="string" export-name="username"></bind>
+      <bind name="password" type="SecureString" export-name="password"></bind>
+      <bind name="fromAddress" type="string" export-name="fromAddress"></bind>
+      <bind name="fromName" type="string" export-name="fromName"></bind>
+    </in-binding>
+    <out-binding>
+      <bind name="canSendEmail" type="boolean" export-name="canSendEmail"></bind>
+    </out-binding>
+    <position y="55.40909090909091" x="344.5"></position>
+  </workflow-item>
+  <workflow-item name="item4" out-name="item1" type="condition" alt-out-name="item0" comparator="0">
+    <display-name><![CDATA[Send email ?]]></display-name>
+    <script encoded="false"><![CDATA[//Generated by the system, cannot be edited
+return (canSendEmail == true) ;]]></script>
+    <in-binding>
+      <bind name="canSendEmail" type="boolean" export-name="canSendEmail"></bind>
+    </in-binding>
+    <condition name="canSendEmail" type="boolean" comparator="0" label="null">false</condition>
+    <position y="45.40909090909091" x="484.5"></position>
+  </workflow-item>
+  <presentation>
+    <p-param name="emailConfigName">
+      <desc><![CDATA[workflowName]]></desc>
+    </p-param>
+    <p-param name="vmName">
+      <desc><![CDATA[vmName]]></desc>
+    </p-param>
+    <p-param name="vmId">
+      <desc><![CDATA[vmId]]></desc>
+    </p-param>
+    <p-param name="errorCode">
+      <desc><![CDATA[errorCode]]></desc>
+    </p-param>
+    <p-param name="vmProperties">
+      <desc><![CDATA[vmProperties]]></desc>
+    </p-param>
+  </presentation>
+</workflow>

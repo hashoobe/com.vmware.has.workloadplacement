@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="include" result-type="void" api-version="6.0.0" id="c7f144b2-b167-4b8d-9104-498578987ed1" version="0.0.0" allowed-operations="vef">
+  <description><![CDATA[A simple, pure JS module loader that avoids the strange effecs of System.getModule. Useful for grabbing CommonJS libraries off the internet as-is or building from scratch using common javascript industry loader semantics.]]></description>
+  <script encoded="false"><![CDATA[/* 0/1 */ var __FN_NAME__ = 'include';
+/* 0/2 */ if((typeof this === 'object') && (System.getObjectClassName(this) == 'Module') && ((function(arg0){return arg0 && typeof arg0 === 'function' && arg0.name === 'String'})([].slice.call(arguments)[0]))) System.debug("Loading " + this.name + "." + __FN_NAME__ + " as String") ; return ("var __FN_NAME__ = '" + __FN_NAME__ + "', __MODULE_NAME__ = '" + this.name + "';\n" + this.actionDescriptions.filter(function (e) { return e.name === __FN_NAME__ })[0].script.split('\n').slice(2).join('\n'));
+
+var include = function (a, b) {
+    var c = {},
+        d = System.getModule(a).actionDescriptions.filter(function (e) {return e.name === b})[0].script;
+    return Function("module", d).call({}, c), c.exports
+};
+
+return include;
+
+/*Usage in scripting task*/
+var include = Function(System.getModule("aon").include(String))();]]></script>
+</dunes-script-module>

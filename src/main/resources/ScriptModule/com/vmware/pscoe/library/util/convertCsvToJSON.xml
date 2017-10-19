@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="convertCsvToJSON" result-type="Any" api-version="6.0.0" id="60889db6-b683-45be-ba4f-f2b08ef9b148" version="0.0.0" allowed-operations="vef">
+  <param n="content" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[//The first line is considered containing column names
+var lines = content.match(/[^\r\n]+/g);
+var propertyNames = lines[0].split(",");
+var jsonData = [];
+for (var i = 1; i<lines.length; i++){
+	var currentLine = lines[i].split(",");
+	var currentLineObject = {};
+	for (var j = 0; j< propertyNames.length;j++){
+		currentLineObject[propertyNames[j]] = currentLine[j];
+	}
+	jsonData.push(currentLineObject);
+}
+return jsonData;]]></script>
+</dunes-script-module>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="categoryPath">com.vmware.pscoe.aon</entry>
+<entry key="name">getLifecycleFromMap</entry>
+<entry key="type">ScriptModule</entry>
+<entry key="id">eb8b8dc0-abdf-4de2-a1cf-bfe861166b14</entry>
+</properties>

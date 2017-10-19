@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="processTemplate" result-type="string" api-version="6.0.0" id="0061b49e-d69d-417b-82b4-db74215f4c8a" version="1.0.0" allowed-operations="vef">
+  <param n="template" t="string"><![CDATA[]]></param>
+  <param n="vars" t="Properties"><![CDATA[]]></param>
+  <param n="pattern" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[if (!pattern || pattern == "") {
+	pattern = "\"#{\" + variable + \"}\"";
+}
+var result = template;
+for each (var variable in vars.keys) {
+	var value = vars.get(variable);
+	result = System.getModule("com.vmware.pscoe.library.util").replaceAll(result,eval(pattern),value);
+}	
+return result;]]></script>
+</dunes-script-module>

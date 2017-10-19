@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="PropertyGroup" result-type="Any" api-version="6.0.0" id="dcc5a1f0-9b6b-40c9-a31c-c9e7ba0f372e" version="0.0.1" allowed-operations="vef">
+  <param n="host" t="vCACCAFE:VCACHost"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var CafeRestClient = System.getModule("com.vmware.pscoe.library.vra").CafeRestClient(host,"com.vmware.csp.core.properties.service.api");
+var restClient = new CafeRestClient("propertygroups");
+
+function convertFromRestProperties(pg) {
+	var newPg = JSON.parse(JSON.stringify(pg));
+	newPg.properties = {};
+	for (var name in pg.properties) {
+		newPg.properties[name] = {
+			visibility : pg.properties[name].facets.visibility.value.value,
+			encrypted : pg.properties[name].facets.encrypted.value.value,			
+			mandatory : pg.properties[name].facets.mandatory.value.value,
+			value : pg.properties[name].facets.defaultValue.value.value
+		}
+	}
+	return newPg;
+}
+
+function convertToRestProperties(pg) {
+	var newPg = JSON.parse(JSON.stringify(pg));
+	newPg.properties = {};
+	for (var name in pg.properties) {
+		var prop = pg.properties[name];
+		newPg.properties[name] = {
+               "facets": {
+                  "visibility": {
+                     "type": "constant",
+                     "value": {
+                        "type": "boolean",
+                        "value": prop.visibility
+                     }
+                  },
+                  "encrypted": {
+                     "type": "constant",
+                     "value": {
+                        "type": "boolean",
+                        "value": prop.encrypted
+                     }
+                  },
+                  "mandatory": {
+                     "type": "constant",
+                     "value": {
+                        "type": "boolean",
+                        "value": prop.mandatory
+                     }
+                  },
+                  "defaultValue": {
+                     "type": "constant",
+                     "value": {
+                        "type": "string",
+                        "value": prop.value
+                     }
+                  }
+               }
+            }
+	}
+	return newPg;
+}
+
+
+var PropertyGroup = function(cr) {
+	for (var key in cr) {
+		this[key] = cr[key]
+	}
+	this.getId = function() {
+		return this.id;
+	}
+
+	this.setLabel = function(label) {
+		this.label = label;
+	}
+
+	this.getLabel = function() {
+		return this.label
+	}
+
+	this.getDescription = function() {
+		return this.description;
+	}
+	
+	this.setDescription = function(description) {
+		this.description = description;
+	}
+
+	this.getProperties = function() {
+		return this.properties;
+	}
+
+	this.setProperties = function(properties) {
+		this.properties = properties;
+	}
+
+	this.save = function() {
+		if (!this.id) {
+			this.id = this.label.replace(/[^a-zA-Z0-9]/g,'');
+		}
+		restClient.createOrUpdate(convertToRestProperties(this));
+	}
+}
+
+PropertyGroup.get = function(name) {
+	var id = name.replace(/[^a-zA-Z0-9]/g,'');
+	var cr = restClient.get(id);
+	if (cr == null) {
+		return null;
+	}
+	return new PropertyGroup(convertFromRestProperties(cr))
+}
+
+PropertyGroup.getAll = function() {
+	var propGroupJson = restClient.getAll();
+	
+	if (propGroupJson == null || propGroupJson.content == null) {
+		return null;
+	}
+	var propGroups = new Array();
+	for each (var pg in propGroupJson.content) {
+		propGroups.push(new PropertyGroup(convertFromRestProperties(pg)));
+	}
+	return propGroups;
+}
+
+PropertyGroup.getByPrefix = function(prefix) {
+	var filter = "startswith(label, '" + prefix + "')";
+	var propGroupJson = restClient.getByFilterString(filter);
+	if (propGroupJson == null || propGroupJson.content == null) {
+		return null;
+	}
+	var propGroups = new Array();
+	for each (var pg in propGroupJson.content) {
+		propGroups.push(new PropertyGroup(convertFromRestProperties(pg)));
+	}
+	return propGroups;
+}
+
+PropertyGroup.getByName = function(name) {
+	var bps = restClient.getByFilter({
+		label : name
+	})
+	for each (var bp in bps) {
+		if (bp.label == name) {
+			return new PropertyGroup(convertFromRestProperties(bp));
+		}
+	}
+	return null;
+}
+
+return PropertyGroup;]]></script>
+</dunes-script-module>

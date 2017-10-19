@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Exported from [server]</comment>
+<entry key="version">1.0.5</entry>
+<entry key="mimetype">text/plain</entry>
+<entry key="categoryPath">AON.General</entry>
+<entry key="name">zone_mapping.csv</entry>
+<entry key="type">ResourceElement</entry>
+<entry key="description">Updated to support alternate datacenter</entry>
+<entry key="id">f37522d7-d449-486c-a8e3-c4c3d80fa908</entry>
+</properties>

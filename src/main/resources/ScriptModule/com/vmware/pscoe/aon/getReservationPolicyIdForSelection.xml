@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getReservationPolicyIdForSelection" result-type="string" api-version="6.0.0" id="6282a9d3-3478-4a4a-9bde-92345a05b155" version="1.1.0" allowed-operations="vef">
+  <description><![CDATA[Updated to support alternate datacenter]]></description>
+  <param n="aonZone" t="string"><![CDATA[]]></param>
+  <param n="aonFunction" t="string"><![CDATA[]]></param>
+  <param n="aonLifecycle" t="string"><![CDATA[]]></param>
+  <param n="aonDatacenter" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("com.vmware.pscoe.aon.getReservationPolicyIdForSelection");
+
+var reservationPolicyId = null;
+
+logger.debug ("Getting reservation policy id mapped to selected values - " +
+		"AonLifecycle: " + aonLifecycle + " - AonFunction: " + aonFunction + " - AonZone: " + aonZone);
+
+var zoneMappingElement = System.getModule("com.vmware.pscoe.library.util").getResourceElementByPath("AON/General", "zone_mapping.csv") ;
+var zoneMappingElementContent = zoneMappingElement.getContentAsMimeAttachment().content;
+
+var mappedReservationPolicyName = null;
+
+var mapping = System.getModule("com.vmware.pscoe.library.util").convertCsvToJSON(zoneMappingElementContent);
+if (mapping) {
+	var filteredMapping = mapping.filter (function(el) {
+		return (el["AonZone value"] == aonZone && el["Datacenter"] == aonDatacenter && el["Lifecycle"] == aonLifecycle);
+	});
+	
+	if (filteredMapping) {
+	logger.debug("Found " + filteredMapping.length + " mapped values for zone, datacenter and lifecycle: " + JSON.stringify(filteredMapping));
+		
+		filteredMapping.forEach(function(el) {
+			if (el["AonFunction"] == aonFunction) {
+				mappedReservationPolicyName = el["Reservation policy name"];
+				logger.debug ("Found reservation policy name '" + mappedReservationPolicyName + "' mapped to AonFunction '" + aonFunction + "'.");
+				// if mapped aonFunction is found, end the loop...
+				return;
+				
+			} else if (el["AonFunction"] == "") {
+				mappedReservationPolicyName = el["Reservation policy name"];
+				logger.debug ("Found reservation policy name '" + mappedReservationPolicyName + "' mapped to all AonFunction values.");
+			}
+		});
+		
+		if (mappedReservationPolicyName) {
+			logger.debug ("Found mapped reservation policy name: " + mappedReservationPolicyName);
+		}
+	}
+}
+
+// Now get the id for the reservation namae
+if (mappedReservationPolicyName) {
+	var reservationIdMap = {};
+	Server.findAllForType('vCACCAFE:ReservationPolicy')
+		.forEach(function(e){
+	  		reservationIdMap[e.name] = e.id;
+	});
+	
+	reservationPolicyId = reservationIdMap[mappedReservationPolicyName];
+	logger.debug ("Found reservation policy id '" + reservationPolicyId + "' mapped to selected values - " +
+		"AonLifecycle: " + aonLifecycle + " - AonFunction: " + aonFunction + " - AonZone: " + aonZone);
+}
+
+return reservationPolicyId;]]></script>
+</dunes-script-module>

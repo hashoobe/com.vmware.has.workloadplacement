@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config-element id="437d60a3-8b79-492e-afa0-50aafc2b593a" version="1.0.2">
+  <display-name><![CDATA[AON email settings]]></display-name>
+  <atts>
+    <att name="host" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="port" type="number" read-only="false"></att>
+    <att name="username" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="password" type="SecureString" read-only="false"></att>
+    <att name="fromAddress" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+    <att name="fromName" type="string" read-only="false">
+      <value encoded="n"><![CDATA[]]></value>
+    </att>
+  </atts>
+</config-element>

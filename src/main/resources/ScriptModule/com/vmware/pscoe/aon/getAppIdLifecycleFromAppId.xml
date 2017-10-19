@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dunes-script-module name="getAppIdLifecycleFromAppId" result-type="string" api-version="6.0.0" id="7ed5d65a-b5b8-4f4e-a17c-7aef09a82e46" version="1.0.1" allowed-operations="vef">
+  <description><![CDATA[Pass Aon APP ID to extract the Aon APP ID Lifecycle from it.
+Example:
+aonAppId = "DV001-LB002",
+this will return the appIdLifecycle "LB"]]></description>
+  <param n="aonAppId" t="string"><![CDATA[]]></param>
+  <script encoded="false"><![CDATA[var logger = System.getModule("com.vmware.pscoe.library.logging").getLogger("com.vmware.pscoe.aon.getLifecycleFromAppId");
+
+var reg = /(?:([A-Za-z]+)+([\d]+))\-(?:([A-Za-z]+)+([\d]+))/
+var aonAppIdLifecycle = "";
+
+var appIdmatch = aonAppId.match(reg);
+
+if (appIdmatch &&  appIdmatch.length > 3){
+	aonAppIdLifecycle = appIdmatch[3];
+}
+
+logger.debug("Lifecycle in AonAppID: " + aonAppIdLifecycle)
+
+return aonAppIdLifecycle;]]></script>
+</dunes-script-module>
